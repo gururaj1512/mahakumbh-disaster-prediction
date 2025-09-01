@@ -166,13 +166,6 @@ const ApiTestPage = () => {
     }
   };
 
-  const getStatusColor = (endpoint) => {
-    if (loading[endpoint.url]) return 'warning';
-    if (errors[endpoint.url]) return 'error';
-    if (responses[endpoint.url]) return 'success';
-    return 'default';
-  };
-
   const getStatusIcon = (endpoint) => {
     if (loading[endpoint.url]) return <CircularProgress size={16} />;
     if (errors[endpoint.url]) return <ErrorIcon color="error" />;
