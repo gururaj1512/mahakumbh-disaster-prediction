@@ -10,8 +10,6 @@ import {
 } from '@mui/material';
 import {
   Groups as GroupsIcon,
-  TrendingUp as TrendingIcon,
-  Warning as WarningIcon,
 } from '@mui/icons-material';
 
 const CrowdWidget = ({ data }) => {

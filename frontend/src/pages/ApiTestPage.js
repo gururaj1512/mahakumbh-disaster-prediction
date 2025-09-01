@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   Grid,
   Card,
@@ -12,8 +12,6 @@ import {
   AccordionSummary,
   AccordionDetails,
   Chip,
-  Divider,
-  TextField,
   FormControl,
   InputLabel,
   Select,
@@ -23,7 +21,6 @@ import {
   ExpandMore as ExpandMoreIcon,
   PlayArrow as PlayIcon,
   Refresh as RefreshIcon,
-  Code as CodeIcon,
   CheckCircle as CheckIcon,
   Error as ErrorIcon,
   Warning as WarningIcon,
@@ -32,7 +29,6 @@ import {
 import axios from 'axios';
 
 const ApiTestPage = () => {
-  const [endpoints, setEndpoints] = useState([]);
   const [loading, setLoading] = useState({});
   const [responses, setResponses] = useState({});
   const [errors, setErrors] = useState({});

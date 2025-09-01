@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { useSocket } from './SocketContext';
 
@@ -39,9 +39,9 @@ export const DataProvider = ({ children }) => {
     if (lastUpdate) {
       fetchDashboardData();
     }
-  }, [lastUpdate]);
+  }, [lastUpdate, fetchDashboardData]);
 
-  const fetchDashboardData = async () => {
+  const fetchDashboardData = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -54,7 +54,7 @@ export const DataProvider = ({ children }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [API_BASE_URL]);
 
   const fetchWeatherData = async () => {
     try {

@@ -28,6 +28,6 @@
     }
   ],
   "env": {
-    "REACT_APP_API_URL": "https://your-render-app-name.onrender.com"
+    "REACT_APP_API_URL": "https://mahakumbh-disaster-prediction.onrender.com"
   }
 }

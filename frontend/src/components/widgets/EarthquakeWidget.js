@@ -12,7 +12,6 @@ import {
 } from '@mui/material';
 import {
   Landscape as EarthquakeIcon,
-  Warning as WarningIcon,
   Timeline as TimelineIcon,
 } from '@mui/icons-material';
 

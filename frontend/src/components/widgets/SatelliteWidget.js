@@ -6,13 +6,10 @@ import {
   Box,
   Grid,
   Chip,
-  LinearProgress,
 } from '@mui/material';
 import {
   Satellite as SatelliteIcon,
   Visibility as VisibilityIcon,
-  Terrain as TerrainIcon,
-  Warning as WarningIcon,
 } from '@mui/icons-material';
 
 const SatelliteWidget = ({ data }) => {
@@ -30,17 +27,6 @@ const SatelliteWidget = ({ data }) => {
       </Card>
     );
   }
-
-  const getRiskColor = (level) => {
-    switch (level) {
-      case 'high':
-        return 'error';
-      case 'moderate':
-        return 'warning';
-      default:
-        return 'success';
-    }
-  };
 
   return (
     <Card className="dashboard-card">

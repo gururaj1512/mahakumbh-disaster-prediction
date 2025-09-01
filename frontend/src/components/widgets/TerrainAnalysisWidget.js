@@ -10,8 +10,6 @@ import {
 } from '@mui/material';
 import {
   Terrain as TerrainIcon,
-  Height as HeightIcon,
-  Landscape as LandscapeIcon,
   Visibility as VisibilityIcon,
 } from '@mui/icons-material';
 

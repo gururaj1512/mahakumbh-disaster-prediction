@@ -26,7 +26,6 @@ const Header = ({ onMenuClick }) => {
 
   const alerts = dashboardData.alerts?.alerts || dashboardData.alerts || [];
   const criticalAlerts = alerts.filter(alert => alert.priority === 'critical') || [];
-  const highPriorityAlerts = alerts.filter(alert => alert.priority === 'high') || [];
 
   const getRiskColor = (riskLevel) => {
     switch (riskLevel) {

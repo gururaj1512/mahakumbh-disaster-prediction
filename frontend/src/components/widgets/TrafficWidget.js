@@ -10,7 +10,6 @@ import {
 } from '@mui/material';
 import {
   DirectionsCar as TrafficIcon,
-  Warning as WarningIcon,
   CheckCircle as CheckIcon,
 } from '@mui/icons-material';
 
@@ -44,7 +43,6 @@ const TrafficWidget = ({ data }) => {
   };
 
   const overallConditions = data.overall_conditions || {};
-  const routes = data.routes || [];
   const bottlenecks = data.bottlenecks || [];
 
   return (

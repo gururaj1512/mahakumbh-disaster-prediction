@@ -14,13 +14,8 @@ import {
   Landscape as EarthquakeIcon,
   Groups as CrowdIcon,
   DirectionsCar as TrafficIcon,
-  Warning as AlertIcon,
   EmergencyShareRounded,
   WbSunny,
-  Landscape,
-  Groups,
-  DirectionsCar,
-  Satellite,
 } from '@mui/icons-material';
 import { useData } from '../contexts/DataContext';
 import WeatherWidget from '../components/widgets/WeatherWidget';
