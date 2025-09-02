@@ -293,23 +293,47 @@ class SatelliteService:
     
     def _get_mock_satellite_data(self):
         """Generate mock satellite data for testing"""
-        return {
-            'image_data': 'mock_image_data_base64',
-            'bbox': [
-                self.config.MAHAKUMBH_LON - 0.1,
-                self.config.MAHAKUMBH_LAT - 0.1,
-                self.config.MAHAKUMBH_LON + 0.1,
-                self.config.MAHAKUMBH_LAT + 0.1
-            ],
-            'time_range': {
-                'from': (datetime.now() - timedelta(days=7)).isoformat() + 'Z',
-                'to': datetime.now().isoformat() + 'Z'
-            },
-            'resolution': '10m',
-            'satellite': 'Sentinel-2',
-            'bands': ['B02', 'B03', 'B04'],
-            'timestamp': datetime.now().isoformat()
-        }
+        print("DEBUG: _get_mock_satellite_data called - generating valid mock image")
+        try:
+            # Try to create an enhanced mock image, fallback to minimal if needed
+            mock_image = self._create_enhanced_mock_image()
+            print(f"DEBUG: Generated enhanced mock image, length: {len(mock_image)}")
+            
+            return {
+                'image_data': mock_image,
+                'bbox': [
+                    self.config.MAHAKUMBH_LON - 0.1,
+                    self.config.MAHAKUMBH_LAT - 0.1,
+                    self.config.MAHAKUMBH_LON + 0.1,
+                    self.config.MAHAKUMBH_LAT + 0.1
+                ],
+                'time_range': {
+                    'from': (datetime.now() - timedelta(days=7)).isoformat() + 'Z',
+                    'to': datetime.now().isoformat() + 'Z'
+                },
+                'resolution': '10m',
+                'satellite': 'Sentinel-2',
+                'bands': ['B02', 'B03', 'B04'],
+                'timestamp': datetime.now().isoformat()
+            }
+        except Exception as e:
+            print(f"DEBUG: Error generating enhanced mock image: {e}")
+            print("DEBUG: Falling back to minimal PNG")
+            # Return minimal valid data as absolute fallback
+            fallback_data = {
+                'image_data': self._get_minimal_png_fallback(),
+                'bbox': [81.7463, 25.3358, 81.9463, 25.5358],
+                'time_range': {
+                    'from': (datetime.now() - timedelta(days=7)).isoformat() + 'Z',
+                    'to': datetime.now().isoformat() + 'Z'
+                },
+                'resolution': '10m',
+                'satellite': 'Sentinel-2',
+                'bands': ['B02', 'B03', 'B04'],
+                'timestamp': datetime.now().isoformat()
+            }
+            print(f"DEBUG: Returning fallback data with image length: {len(fallback_data['image_data'])}")
+            return fallback_data
     
     def _get_mock_flood_analysis(self):
         """Generate mock flood analysis data"""
@@ -321,3 +345,59 @@ class SatelliteService:
             'analysis_timestamp': datetime.now().isoformat(),
             'recommendations': ['Monitor water levels', 'Prepare evacuation plans']
         }
+
+    def _get_minimal_png_fallback(self):
+        """Return a minimal PNG image that is guaranteed to be valid"""
+        return "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII="
+    
+    def _create_enhanced_mock_image(self):
+        """Create an enhanced mock image using PIL if available"""
+        try:
+            from PIL import Image, ImageDraw
+            import io
+            
+            # Create a 256x256 image with terrain-like features
+            width, height = 256, 256
+            image = Image.new('RGB', (width, height), color=(34, 139, 34))  # Forest green base
+            
+            # Add some terrain features
+            draw = ImageDraw.Draw(image)
+            
+            # Add water bodies (blue areas)
+            for _ in range(3):
+                x1 = random.randint(0, width)
+                y1 = random.randint(0, height)
+                x2 = x1 + random.randint(40, 120)
+                y2 = y1 + random.randint(40, 120)
+                draw.ellipse([x1, y1, x2, y2], fill=(70, 130, 180))  # Steel blue
+            
+            # Add urban areas (gray areas)
+            for _ in range(5):
+                x1 = random.randint(0, width)
+                y1 = random.randint(0, height)
+                x2 = x1 + random.randint(20, 80)
+                y2 = y1 + random.randint(20, 80)
+                draw.rectangle([x1, y1, x2, y2], fill=(128, 128, 128))  # Gray
+            
+            # Add roads (dark lines)
+            for _ in range(4):
+                x1 = random.randint(0, width)
+                y1 = random.randint(0, height)
+                x2 = x1 + random.randint(80, 200)
+                y2 = y1 + random.randint(80, 200)
+                draw.line([x1, y1, x2, y2], fill=(64, 64, 64), width=6)
+            
+            # Convert to base64
+            buffer = io.BytesIO()
+            image.save(buffer, format='PNG')
+            image_data = buffer.getvalue()
+            buffer.close()
+            
+            return base64.b64encode(image_data).decode('utf-8')
+            
+        except ImportError:
+            print("DEBUG: PIL not available, using minimal PNG")
+            return self._get_minimal_png_fallback()
+        except Exception as e:
+            print(f"DEBUG: Error creating enhanced mock image: {e}")
+            return self._get_minimal_png_fallback()

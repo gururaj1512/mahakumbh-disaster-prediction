@@ -11,6 +11,7 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  Alert,
 } from '@mui/material';
 import {
   Satellite as SatelliteIcon,
@@ -200,6 +201,20 @@ const SatelliteImageryWidget = ({ data }) => {
               variant="outlined"
             />
           </Box>
+
+          {/* Configuration Help for Placeholder Images */}
+          {data.image_data && data.image_data.length < 200 && (
+            <Box mt={2}>
+              <Alert severity="info">
+                <Typography variant="body2">
+                  <strong>Placeholder Image Detected:</strong>
+                </Typography>
+                <Typography variant="body2" sx={{ mt: 1 }}>
+                  This is a placeholder image. To view real satellite imagery, configure Sentinel Hub API credentials in your backend environment variables.
+                </Typography>
+              </Alert>
+            </Box>
+          )}
 
           {/* Timestamp */}
           <Box mt={2} textAlign="center">
