@@ -4,6 +4,7 @@ import base64
 from datetime import datetime, timedelta
 import random
 from config import Config
+import os
 
 class SatelliteService:
     def __init__(self):
@@ -74,6 +75,7 @@ class SatelliteService:
             
             access_token = self._get_access_token()
             if not access_token:
+                print("DEBUG: No access token available, using static image fallback")
                 return self._get_mock_satellite_data()
             
             # Prepare request payload for Sentinel Hub
@@ -141,6 +143,7 @@ class SatelliteService:
                 
         except Exception as e:
             print(f"Error getting satellite imagery: {e}")
+            print("DEBUG: Using static image fallback due to error")
             return self._get_mock_satellite_data()
     
     def get_flood_analysis(self, bbox=None):
@@ -318,10 +321,10 @@ class SatelliteService:
             }
         except Exception as e:
             print(f"DEBUG: Error generating enhanced mock image: {e}")
-            print("DEBUG: Falling back to minimal PNG")
-            # Return minimal valid data as absolute fallback
+            print("DEBUG: Falling back to static image")
+            # Return static image data as fallback
             fallback_data = {
-                'image_data': self._get_minimal_png_fallback(),
+                'image_data': self._get_static_image_fallback(),
                 'bbox': [81.7463, 25.3358, 81.9463, 25.5358],
                 'time_range': {
                     'from': (datetime.now() - timedelta(days=7)).isoformat() + 'Z',
@@ -349,6 +352,36 @@ class SatelliteService:
     def _get_minimal_png_fallback(self):
         """Return a minimal PNG image that is guaranteed to be valid"""
         return "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII="
+    
+    def _load_static_satellite_image(self):
+        """Load the static satellite image from the backend directory"""
+        try:
+            # Get the path to the backend directory and look for the static image
+            backend_dir = os.path.dirname(os.path.dirname(__file__))
+            static_image_path = os.path.join(backend_dir, 'satellite-imagery.png')
+            
+            if os.path.exists(static_image_path):
+                print(f"DEBUG: Loading static satellite image from: {static_image_path}")
+                with open(static_image_path, 'rb') as image_file:
+                    image_data = image_file.read()
+                    base64_data = base64.b64encode(image_data).decode('utf-8')
+                    print(f"DEBUG: Static image loaded successfully, size: {len(image_data)} bytes, base64 length: {len(base64_data)}")
+                    return base64_data
+            else:
+                print(f"DEBUG: Static image not found at: {static_image_path}")
+                return None
+        except Exception as e:
+            print(f"DEBUG: Error loading static image: {e}")
+            return None
+    
+    def _get_static_image_fallback(self):
+        """Get the static satellite image as fallback, or minimal PNG if not available"""
+        static_image = self._load_static_satellite_image()
+        if static_image:
+            return static_image
+        else:
+            print("DEBUG: Static image not available, using minimal PNG fallback")
+            return self._get_minimal_png_fallback()
     
     def _create_enhanced_mock_image(self):
         """Create an enhanced mock image using PIL if available"""
