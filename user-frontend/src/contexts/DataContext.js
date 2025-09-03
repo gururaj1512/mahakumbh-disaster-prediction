@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { useSocket } from './SocketContext';
 
@@ -27,19 +27,7 @@ export const DataProvider = ({ children }) => {
   // Get API base URL from environment variable or use localhost for development
   const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5001';
 
-  // Fetch initial data
-  useEffect(() => {
-    fetchDashboardData();
-  }, []);
-
-  // Update data when socket receives updates
-  useEffect(() => {
-    if (lastUpdate) {
-      fetchDashboardData();
-    }
-  }, [lastUpdate]);
-
-  const fetchDashboardData = async () => {
+  const fetchDashboardData = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -78,7 +66,19 @@ export const DataProvider = ({ children }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [API_BASE_URL]);
+
+  // Fetch initial data
+  useEffect(() => {
+    fetchDashboardData();
+  }, [fetchDashboardData]);
+
+  // Update data when socket receives updates
+  useEffect(() => {
+    if (lastUpdate) {
+      fetchDashboardData();
+    }
+  }, [lastUpdate, fetchDashboardData]);
 
   const fetchWeatherData = async () => {
     try {

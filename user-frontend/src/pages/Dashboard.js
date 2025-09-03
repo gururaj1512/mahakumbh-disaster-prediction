@@ -10,10 +10,8 @@ import {
   CircularProgress,
 } from '@mui/material';
 import {
-  WbSunny as WeatherIcon,
   Warning as AlertIcon,
   EmergencyShareRounded,
-  WbSunny,
   EmergencyShareRounded as EmergencyIcon,
   DirectionsCar as TrafficIcon,
 } from '@mui/icons-material';
